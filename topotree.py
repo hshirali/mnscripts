@@ -12,13 +12,14 @@ from myTree import TreeNet
 
 def run( controllers ):
    # net = Mininet( topo=topo, controller=None, autoSetMacs=True )
-    net = TreeNet( depth=3, fanout=3, controller=None)
+    net = TreeNet( depth=1, fanout=3, controller=None)
     ctrl_count = 01
     for controllerIP in controllers:
         net.addController( 'c%d' % ctrl_count, RemoteController, ip=controllerIP )
         ctrl_count += 1
     net.start()
-    CLI( net )
+    #CLI( net )
+
     net.stop()
 
 if __name__ == '__main__':
