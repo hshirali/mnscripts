@@ -75,7 +75,7 @@ def myiperf(self, hosts=None, l4Type='TCP', udpBw='10M', fmt=None,
     time1 = time.time()
     ttt=2
     for coun in range(8):
-        cliout = client.cmd(iperfArgs + ' -l 42 -n %d -c ' % ttt +
+        cliout = client.cmd(iperfArgs + '-P 2 -l 42 -n %d -c ' % ttt +
                         server.IP() + ' ' + bwArgs)
 #        time.sleep(.01)
     time2 = time.time()
