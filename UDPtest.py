@@ -36,6 +36,12 @@ def timing(f):
         return ret
     return wrap
 
+
+def myTCP(self,host=None):
+    hosts = hosts or [self.hosts[0], self.hosts[-1]]
+    assert len(hosts) == 2
+    client, server = hosts
+
 @timing
 def myiperf(self, hosts=None, l4Type='TCP', udpBw='10M', fmt=None,
           seconds=2, port=5001):
