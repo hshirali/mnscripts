@@ -2,7 +2,6 @@ import socket
 import sys, getopt
 import time
 from threading import Thread
-import multiprocessing
 
 def UDPclient(UDP_IP, UDP_PORT, total,result,index,loglevel=None):
     time1 = time.time()
@@ -10,28 +9,24 @@ def UDPclient(UDP_IP, UDP_PORT, total,result,index,loglevel=None):
     count = 0
     error = 0
     #    wait=0.005 # in ms
-    MESSAGE = "Hello, World!"
     for i in range(0, total, 1):
- #       try:
+        try:
             #time.sleep(20000/1000)
-
+            MESSAGE = "Hello, World!"
             sock = socket.socket(socket.AF_INET,  # Internet
                                  socket.SOCK_DGRAM)  # UDP
             sock.sendto(MESSAGE, (UDP_IP, UDP_PORT))
- #           count = count + 1
- #           if loglevel=='log':
- #               if i%10000 == 0 :
- #                   t2=time.time()
- #                   print "at %i \t %0.3f ms" % (i,(t2-t1)*1000)
- #                   t1=t2
- #       except:
- #           error = error + 1
- #           print 'erro'
+            count = count + 1
+            if loglevel=='log':
+                if i%10000 == 0 :
+                    t2=time.time()
+                    print "at %i \t %0.3f ms" % (i,(t2-t1)*1000)
+                    t1=t2
+        except:
+            error = error + 1
+            print 'erro'
 
     time2 = time.time()
-    if loglevel == 'log':
-        print "in proccess %i at %i \t %0.3f ms  per flow\t %0.3f microsec" % (index,total, (time2 - time1) * 1000,(time2 - time1)/total*1000*1000)
-
     #print "total",total,"\t index " ,index
     result[index] =(time2 - time1)  #{'time':(time2 - time1),'count':count,'error':error}
 
@@ -63,7 +58,7 @@ for opt, arg in opts:
         totalmessage=int(arg)
     elif opt in ("-t", "--thread"):
         threadnum= int(arg)
-    elif opt in ("-l", "--loglevel"):
+    elif opt in ("-l", "--thread"):
         loglevel=arg
 
 print "UDP target IP:", UDP_IP
@@ -72,22 +67,22 @@ print "message:", MESSAGE
 print "thread:",threadnum
 print "count:",totalmessage
 print loglevel
-udpproc = [None] * threadnum
+threads = [None] * threadnum
 results = [None] * threadnum
 
 time1m = time.time()
 
-for i in range(len(udpproc)):
-    udpproc[i] = multiprocessing.Process(target=UDPclient, args=(UDP_IP,UDP_PORT,totalmessage/threadnum ,results,i,loglevel))
-    udpproc[i].start()
+for i in range(len(threads)):
+    threads[i] = Thread(target=UDPclient, args=(UDP_IP,UDP_PORT,totalmessage/threadnum ,results,i,loglevel))
+    threads[i].start()
 
-for i in range(len(udpproc)):
-    udpproc[i].join()
+for i in range(len(threads)):
+    threads[i].join()
 time2m = time.time()
 
 #res=results[0]
 difftime=time2m-time1m
-#difftime=sum(results)/threadnum
+difftime=sum(results)/threadnum
 #difftime=result['time']
 #count=result['count']
 count=totalmessage

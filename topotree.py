@@ -7,17 +7,39 @@ from mininet.cli import CLI
 from mininet.net import Mininet
 from mininet.node import RemoteController, OVSKernelSwitch
 from mininet.log import setLogLevel
+import time
+
 #from mininet.topolib import TreeNet
 from myTree import TreeNet
+from mininet.log import info, error, debug, output
+
+def sendudp(self, hosts=None):
+    hosts = hosts or [self.hosts[0], self.hosts[-1]]
+    assert len(hosts) == 2
+    client, server = hosts
+    udpcommand='python UDPclient.py -c 1  -i %s -t 10' % server.IP()
+    cliout = client.cmd(udpcommand)
+    output('Client output: %s\n' % cliout)
 
 def run( controllers ):
    # net = Mininet( topo=topo, controller=None, autoSetMacs=True )
-    net = TreeNet( depth=1, fanout=3, controller=None)
+    net = TreeNet( depth=1, fanout=2, controller=None)
     ctrl_count = 01
     for controllerIP in controllers:
         net.addController( 'c%d' % ctrl_count, RemoteController, ip=controllerIP )
         ctrl_count += 1
     net.start()
+    #net.pingAll(1000)
+    time.sleep(10)
+
+    h1, h2 = net.get('h1', 'h2')
+    #net.ping((h1,h2))
+    sendudp(net,(h1,h2))
+
+
+    #print h1.cmd('ping -c1 %s' % h2.IP())
+
+    time.sleep(10)
     #CLI( net )
 
     net.stop()

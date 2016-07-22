@@ -21,7 +21,7 @@ class TreeTopo( Topo ):
            returns: last node added"""
         isSwitch = depth > 0
         if isSwitch:
-            node = self.addSwitch( 'shir%s' % self.switchNum )#,protocols='OpenFlow13' )
+            node = self.addSwitch( 'shir%s' % self.switchNum ,protocols='OpenFlow13' )
             self.switchNum += 1
             for _ in range( fanout ):
                 child = self.addTree( depth - 1, fanout )
