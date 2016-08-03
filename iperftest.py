@@ -27,6 +27,7 @@ class SingleSwitchTopo(Topo):
             # 10 Mbps, 5ms delay, 10% loss, 1000 packet queue
             self.addLink(host, switch,
                )
+
 def timing(f):
     def wrap(*args):
         time1 = time.time()
@@ -97,6 +98,7 @@ def perfTest():
     topo = SingleSwitchTopo(n=4)
     net = Mininet(topo=topo,
                   host=CPULimitedHost, link=TCLink)
+
     net.start()
     print "Dumping host connections"
     dumpNodeConnections(net.hosts)
